@@ -20,7 +20,11 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    console.log(id);
+    const response = await api.post(`repositories/${id}/like`);
+
+    api.get('/repositories').then(response => {
+        setRepositories(response.data);
+      });
   }
 
   return (
@@ -45,12 +49,12 @@ export default function App() {
             > {repository.likes} curtidas</Text>
 
             <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleLikeRepository(repository.id)}
-            testID={`like-button-${repository.id}`}
-          >
-            <Text style={styles.buttonText}>Curtir</Text>
-          </TouchableOpacity>
+              style={styles.button}
+              onPress={() => handleLikeRepository(repository.id)}
+              testID={`like-button-${repository.id}`}
+            >
+              <Text style={styles.buttonText}>Curtir</Text>
+            </TouchableOpacity>
           </View>
             </>
           )}
