@@ -20,13 +20,43 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
+    console.log(id);
   }
 
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <SafeAreaView style={styles.container}>
+        <FlatList style={styles.repositoryContainer}
+          data={repositories}
+          keyExtractor={repository => repository.id}
+          renderItem={({item: repository}) => (
+            <>
+            <Text style={styles.repository}>{repository.title}</Text>
+            
+            <View style={styles.techsContainer}>
+              <Text style={styles.tech}>{repository.tech}</Text>
+            </View>
+            <View style={styles.likesContainer}>
+            <Text
+              style={styles.likeText}
+              // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
+              testID={`repository-likes-${repository.id}`}
+            > {repository.likes} curtidas</Text>
+
+            <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleLikeRepository(repository.id)}
+            testID={`like-button-${repository.id}`}
+          >
+            <Text style={styles.buttonText}>Curtir</Text>
+          </TouchableOpacity>
+          </View>
+            </>
+          )}
+        >
+
+        </FlatList>
 
         <View style={styles.repositoryContainer}>
           <Text style={styles.repository}>Repository 1</Text>
