@@ -20,16 +20,27 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    const response = await api.post(`repositories/${id}/like`);
-    console.log('ID:' + id)
-    const repositoryIndex = repositories.findIndex(repository => repository.id === id);
-    console.log('RepositoryIndex: '+repositoryIndex)
-    const repository = response.data;
-    console.log('Repository data: '+ repository.title)
-    repositories[repositoryIndex].likes = repository.likes;
+    const likedRepository = await api.post(`repositories/${id}/like`);
+
+    const repositoriesUpdated = repositories.map(repository => {
+      if(repository.id === id) {
+        return likedRepository;
+      } else {
+        return repository;
+      }
+    });
+
+    setRepositories(repositoriesUpdated);
+
+    // console.log('ID:' + id)
+    // const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+    // console.log('RepositoryIndex: '+repositoryIndex)
+    // const repository = response.data;
+    // console.log('Repository data: '+ repository.title)
+    // repositories[repositoryIndex].likes = repository.likes;
 
     // Not refreshing the frontend, understand why
-    setRepositories(repositories);
+    //setRepositories(repositories);
     //setRepositories(...repositories, repository);
   }
 
@@ -37,21 +48,26 @@ export default function App() {
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <SafeAreaView style={styles.container}>
-        <FlatList style={styles.repositoryContainer}
+        <FlatList
           data={repositories}
           keyExtractor={repository => repository.id}
-          renderItem={({item: repository}) => (
-            <>
+          renderItem={({ item: repository }) => (
+            <View style={styles.repositoryContainer}>
               <Text style={styles.repository}>{repository.title}</Text>
               
               <View style={styles.techsContainer}>
-                <Text style={styles.tech}>{repository.techs}</Text>
+                {repository.techs.map(tech => (
+                  <Text key={tech} style={styles.tech}>{tech}</Text>
+                ))}
               </View>
+
               <View style={styles.likesContainer}>
               <Text
                 style={styles.likeText}
                 testID={`repository-likes-${repository.id}`}
-              > {repository.likes} {repository.likes > 1 ? 'curtidas': 'curtida'}</Text>
+              >
+                {repository.likes} curtidas
+              </Text>
 
               <TouchableOpacity
                 style={styles.button}
@@ -61,7 +77,7 @@ export default function App() {
                 <Text style={styles.buttonText}>Curtir</Text>
               </TouchableOpacity>
               </View>
-            </>
+            </View>
           )}
         >
         </FlatList>
