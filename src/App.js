@@ -1,4 +1,7 @@
+// Import useState for keep track of the change
+// Import useEffect to run when the App loads
 import React, { useState, useEffect } from "react";
+// Imported the required components for the UI
 import {
   SafeAreaView,
   View,
@@ -8,30 +11,36 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+// Import the api to communicate with the backend
 import api from './services/api';
-
+// Start the App
 export default function App() {
+  // Set the array of repositories and create func to set
   const [repositories, setRepositories] = useState([]);
-
+  // Load data from the backend of data when the app loads
   useEffect(() => {
     api.get('/repositories').then(response => {
       setRepositories(response.data);
     });
   }, []);
-
+  // Handle the addition of like to repositories
   async function handleLikeRepository(id) {
+    // Post the like to the backend by the id
     const response = await api.post(`repositories/${id}/like`);
-
+    // Get the updated data for the repository
     const likedRepository = response.data;
-
+    // Update the array changing the data for the updated repo
     const repositoriesUpdated = repositories.map(repository => {
+      // Check if the repositoy id is equal to the one changed
       if(repository.id === id) {
+        // Return the updated object (likedRepository)
         return likedRepository;
       } else {
+        // Else, return the repository that is currently in the array
         return repository;
       }
     });
-
+    // Set the repository data in the UI with the updated array
     setRepositories(repositoriesUpdated);
   }
 
@@ -77,6 +86,7 @@ export default function App() {
   );
 }
 
+// Style sheet for the App
 const styles = StyleSheet.create({
   container: {
     flex: 1,
