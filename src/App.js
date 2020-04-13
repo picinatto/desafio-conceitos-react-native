@@ -20,7 +20,9 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    const likedRepository = await api.post(`repositories/${id}/like`);
+    const response = await api.post(`repositories/${id}/like`);
+
+    const likedRepository = response.data;
 
     const repositoriesUpdated = repositories.map(repository => {
       if(repository.id === id) {
@@ -31,17 +33,6 @@ export default function App() {
     });
 
     setRepositories(repositoriesUpdated);
-
-    // console.log('ID:' + id)
-    // const repositoryIndex = repositories.findIndex(repository => repository.id === id);
-    // console.log('RepositoryIndex: '+repositoryIndex)
-    // const repository = response.data;
-    // console.log('Repository data: '+ repository.title)
-    // repositories[repositoryIndex].likes = repository.likes;
-
-    // Not refreshing the frontend, understand why
-    //setRepositories(repositories);
-    //setRepositories(...repositories, repository);
   }
 
   return (
